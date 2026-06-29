@@ -6,7 +6,8 @@ using UnityEditor;
 public class StartupMemoWindow : EditorWindow
 {
     private static MemoData memoData;
-    private const string MemoDataPath = "Assets/Editor/ProgressManager/MemoData.asset";
+    private const string MemoDataDirectory = "Assets/ProgressManagerSettings";
+    private const string MemoDataPath = MemoDataDirectory + "/MemoData.asset";
 
     // Unity起動時に自動で呼ばれる処理
     static StartupMemoWindow()
@@ -42,6 +43,12 @@ public class StartupMemoWindow : EditorWindow
             memoData = AssetDatabase.LoadAssetAtPath<MemoData>(MemoDataPath);
             if (memoData == null)
             {
+                // 指定のフォルダがなかったら親のフォルダを作成
+                if (!AssetDatabase.IsValidFolder(MemoDataDirectory))
+                {
+                    AssetDatabase.CreateFolder("Assets", "ProgressManagerSettings");
+                }
+                // 保存先を新しく生成
                 memoData = CreateInstance<MemoData>();
                 AssetDatabase.CreateAsset(memoData, MemoDataPath);
                 AssetDatabase.SaveAssets();
